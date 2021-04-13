@@ -19,6 +19,10 @@ const UPDATE_MESSAGE = 'UPDATE message SET first_name = @fname, last_name = @lna
 
 const DELETE_MESSAGE = 'DELETE FROM message WHERE _id = @id; SELECT * FROM message for json path;';
 
+const MESSAGE_READ = 'IF EXISTS(SELECT * FROM [read] WHERE messageID = @id) BEGIN UPDATE [read] SET messageID = @id, messageRead = @isRead, _date = @date, readBy = @by WHERE messageID = @id END ELSE BEGIN INSERT INTO [read] (messageID, messageRead, _date, readBy) VALUES (@id, @isRead, @date, @by) END;';
+
+const GET_CHECKED_MESSAGES = 'SELECT * FROM [read] for json path;';
+
 //GET ALL MESSAGES
 let getMessages = async () => {
 
@@ -123,6 +127,27 @@ let getMessageById = async (id) => {
 
 }
 
+let getCheckedMessages = async () => {
+
+    let message;
+
+    try{
+        const pool = await dbConnect
+        const result = await pool.request()
+        .query(GET_CHECKED_MESSAGES)
+
+        // console.log(result.recordset);
+
+        message = result.recordset[0];
+
+    }catch(e){
+        console.log(`Message Repository Failed to connect to DB ${e.message}`);
+    }
+
+    return message;
+
+}
+
 
 //CREATE MESSAGE
 let createNewMessage = async(message) => {
@@ -153,6 +178,33 @@ let createNewMessage = async(message) => {
     }
 
     return newMessage;
+}
+
+
+let messageRead = async (read) => {
+    console.log(read);
+
+    let readMessage;
+    
+
+    try{
+        const pool = await dbConnect
+        const result = await pool.request()
+        .input('id', sql.Int, read.messageID)
+        .input('isRead', sql.Bit, read.messageRead)
+        .input('date', sql.Date, read._date)
+        .input('by', sql.NVarChar, read.readBy)
+        .query(MESSAGE_READ);
+
+        readMessage = result.rowsAffected[0];
+
+    }catch(e){
+        console.log(`Message Repository Failed to connect to DB ${e.message}`);
+    }
+
+    return readMessage;
+
+
 }
 
 
@@ -210,5 +262,5 @@ let deleteMessage = async (id) => {
 
 module.exports = {
 
-    getMessages, createNewMessage, updateMessage, deleteMessage, getMessageBySubject, getMessageByDate, getMessageById, getMessageByStudent
+    getMessages, createNewMessage, updateMessage, deleteMessage, getMessageBySubject, getMessageByDate, getMessageById, getMessageByStudent, messageRead, getCheckedMessages
 }

@@ -54,7 +54,7 @@ router.get('/bydate', checkJwt, checkAuth([authConfig.update]), async (req, res)
 });
 
 
-router.get('/student/:isStudent', async (req, res) => {
+router.get('/student/:isStudent', checkJwt, checkAuth([authConfig.update]),  async (req, res) => {
     console.log(req.params.isStudent);
     let id = req.params.isStudent;
 
@@ -69,6 +69,22 @@ router.get('/student/:isStudent', async (req, res) => {
     }
     
 })
+
+
+router.get('/check/readMessages', async (req, res) => {
+    // console.log(req.body);
+
+    try{
+        const result = await messageService.getCheckedMessages();
+        // console.log(result);
+        res.json(result);
+
+    }catch(e){
+        console.log(e);
+        e.status(500);
+        res.send(e.message);
+    }
+});
 
 
 router.get('/byid/:id', checkJwt, checkAuth([authConfig.update]), async (req, res) => {
@@ -102,6 +118,21 @@ router.post('/new', checkJwt, async (req, res) => {
         res.send(e.message);
     }
 });
+
+router.post('/read', async (req, res) => {
+
+    let checkMessage = req.body;
+    console.log('res.body', checkMessage);
+    try{
+
+        const result = await messageService.messageRead(checkMessage);
+        res.json(result);
+    }catch(e){
+        console.log(e);
+        e.status(500);
+        res.send(e.message);
+    }
+})
 
 
 router.put('/update', checkJwt, checkAuth([authConfig.update]), async (req, res) => {

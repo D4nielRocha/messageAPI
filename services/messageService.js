@@ -73,6 +73,13 @@ let getMessageByStudent = async (id) => {
     
 }
 
+let getCheckedMessages = async () => {
+
+    const messages = await messageRepository.getCheckedMessages();
+    return messages;
+
+}
+
 
 
 let newMessage = async (message) => {
@@ -93,6 +100,15 @@ let newMessage = async (message) => {
 
     return newMessage;
 }
+
+
+let messageRead = async (read) => {
+
+    let readMessage = await messageRepository.messageRead(read);
+    return readMessage;
+
+}
+
 
 
 let updateMessage = async (message) => {
@@ -132,5 +148,5 @@ let deleteMessage = async (id) => {
 
 
 module.exports = {
-    getAllMessages, newMessage, updateMessage, deleteMessage, getMessageBySubject, getMessageByDate, getMessageById, getMessageByStudent
+    getAllMessages, newMessage, updateMessage, deleteMessage, getMessageBySubject, getMessageByDate, getMessageById, getMessageByStudent, messageRead, getCheckedMessages
 }
