@@ -104,7 +104,7 @@ router.get('/byid/:id', checkJwt, checkAuth([authConfig.update]), async (req, re
 })
 
 
-router.post('/new', checkJwt, async (req, res) => {
+router.post('/new', checkJwt,  async (req, res) => {
 
     let message = req.body;
     console.log(message);
