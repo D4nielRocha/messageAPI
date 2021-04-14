@@ -71,7 +71,7 @@ router.get('/student/:isStudent', checkJwt, checkAuth([authConfig.update]),  asy
 })
 
 
-router.get('/check/readMessages', async (req, res) => {
+router.get('/check/readMessages', checkJwt, checkAuth([authConfig.update]), async (req, res) => {
     // console.log(req.body);
 
     try{
@@ -119,7 +119,7 @@ router.post('/new', checkJwt, async (req, res) => {
     }
 });
 
-router.post('/read', async (req, res) => {
+router.post('/read', checkJwt, checkAuth([authConfig.update]), async (req, res) => {
 
     let checkMessage = req.body;
     console.log('res.body', checkMessage);

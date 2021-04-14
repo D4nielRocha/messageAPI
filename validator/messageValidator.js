@@ -47,9 +47,9 @@ let validateMessage = (message) => {
     }
     console.log(`this is the validatedMessage`, validatedmessage);
     return validatedmessage;
-
-
 }
+
+
 
 
 module.exports = {
